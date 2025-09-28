@@ -1,0 +1,15 @@
+fn int multiply(int a, int b) {
+    int result = a * b;
+    print("Result: " + result);
+    return a + b;
+} .
+
+int a = 1 ;
+int b = 2 .
+float c = 3.1415 ;
+
+agar (a < b) {
+    print("a < b\n");
+} warna {
+    print("a >= b\n");
+} .
