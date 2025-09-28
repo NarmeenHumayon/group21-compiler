@@ -1,0 +1,167 @@
+=== Parsing: examples\example02.src ===
+
+=== Tokens ===
+Function()
+Int()
+Identifier('multiply')
+ParenL()
+Int()
+Identifier('a')
+Comma()
+Int()
+Identifier('b')
+ParenR()
+BraceL()
+Int()
+Identifier('result')
+AssignOp()
+Identifier('a')
+MulOp()
+Identifier('b')
+Semicolon()
+Identifier('print')
+ParenL()
+StringLit('Result: ')
+AddOp()
+Identifier('result')
+ParenR()
+Semicolon()
+Return()
+Identifier('a')
+AddOp()
+Identifier('b')
+Semicolon()
+BraceR()
+Dot()
+Int()
+Identifier('a')
+AssignOp()
+IntLit(1)
+Semicolon()
+Int()
+Identifier('b')
+AssignOp()
+IntLit(2)
+Dot()
+Float()
+Identifier('c')
+AssignOp()
+FloatLit(3.1415)
+Semicolon()
+If()
+ParenL()
+Identifier('a')
+LessThan()
+Identifier('b')
+ParenR()
+BraceL()
+Identifier('print')
+ParenL()
+StringLit('a < b\n')
+ParenR()
+Semicolon()
+BraceR()
+Else()
+BraceL()
+Identifier('print')
+ParenL()
+StringLit('a >= b\n')
+ParenR()
+Semicolon()
+BraceR()
+Dot()
+EOF()
+
+=== AST ===
+Program
+  ├─ items:
+    FnDecl
+      ├─ type_tok:
+        'Int'
+      ├─ name:
+        'multiply'
+      ├─ params:
+        Param
+          ├─ type_tok:
+            'Int'
+          ├─ name:
+            'a'
+        Param
+          ├─ type_tok:
+            'Int'
+          ├─ name:
+            'b'
+      ├─ body:
+        ('Var', VarDecl(type_tok='Int', name='result', expr=Binary(op='MulOp', left=Identifier(name='a'), right=Identifier(name='b'))))
+        ExprStmt
+          ├─ expr:
+            Call
+              ├─ callee:
+                Identifier
+                  ├─ name:
+                    'print'
+              ├─ args:
+                Binary
+                  ├─ op:
+                    'AddOp'
+                  ├─ left:
+                    Literal
+                      ├─ value:
+                        'Result: '
+                  ├─ right:
+                    Identifier
+                      ├─ name:
+                        'result'
+        ReturnStmt
+          ├─ expr:
+            Binary
+              ├─ op:
+                'AddOp'
+              ├─ left:
+                Identifier
+                  ├─ name:
+                    'a'
+              ├─ right:
+                Identifier
+                  ├─ name:
+                    'b'
+    ('Var', VarDecl(type_tok='Int', name='a', expr=Literal(value=1)))    
+    ('Var', VarDecl(type_tok='Int', name='b', expr=Literal(value=2)))    
+    ('Var', VarDecl(type_tok='Float', name='c', expr=Literal(value=3.1415)))
+    IfStmt
+      ├─ cond:
+        Binary
+          ├─ op:
+            'LessThan'
+          ├─ left:
+            Identifier
+              ├─ name:
+                'a'
+          ├─ right:
+            Identifier
+              ├─ name:
+                'b'
+      ├─ if_block:
+        ExprStmt
+          ├─ expr:
+            Call
+              ├─ callee:
+                Identifier
+                  ├─ name:
+                    'print'
+              ├─ args:
+                Literal
+                  ├─ value:
+                    'a < b\n'
+      ├─ else_block:
+        ExprStmt
+          ├─ expr:
+            Call
+              ├─ callee:
+                Identifier
+                  ├─ name:
+                    'print'
+              ├─ args:
+                Literal
+                  ├─ value:
+                    'a >= b\n'

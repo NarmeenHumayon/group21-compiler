@@ -1,0 +1,59 @@
+=== Parsing: examples\example01.src ===
+
+=== Tokens ===
+Function()
+Int()
+Identifier('my_fn')
+ParenL()
+Int()
+Identifier('x')
+Comma()
+Float()
+Identifier('y')
+ParenR()
+BraceL()
+String()
+Identifier('my_str')
+AssignOp()
+StringLit('hmm')
+Semicolon()
+Bool()
+Identifier('my_bool')
+AssignOp()
+Identifier('x')
+EqualsOp()
+IntLit(40)
+Semicolon()
+Return()
+Identifier('x')
+Semicolon()
+BraceR()
+EOF()
+
+=== AST ===
+Program
+  ├─ items:
+    FnDecl
+      ├─ type_tok:
+        'Int'
+      ├─ name:
+        'my_fn'
+      ├─ params:
+        Param
+          ├─ type_tok:
+            'Int'
+          ├─ name:
+            'x'
+        Param
+          ├─ type_tok:
+            'Float'
+          ├─ name:
+            'y'
+      ├─ body:
+        ('Var', VarDecl(type_tok='String', name='my_str', expr=Literal(value='hmm')))
+        ('Var', VarDecl(type_tok='Bool', name='my_bool', expr=Binary(op='EqualsOp', left=Identifier(name='x'), right=Literal(value=40))))
+        ReturnStmt
+          ├─ expr:
+            Identifier
+              ├─ name:
+                'x'
