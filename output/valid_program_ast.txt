@@ -1,0 +1,457 @@
+Program
+  |-- items:
+    Tuple:
+      [0]:
+        'Var'
+      [1]:
+        VarDecl
+          |-- type_tok:
+            'Int'
+          |-- name:
+            'globalCounter'
+          |-- expr:
+            Literal
+              |-- value:
+                0
+    FnDecl
+      |-- type_tok:
+        'Int'
+      |-- name:
+        'increment'
+      |-- params:
+        Param
+          |-- type_tok:
+            'Int'
+          |-- name:
+            'value'
+      |-- body:
+        ReturnStmt
+          |-- expr:
+            Binary
+              |-- op:
+                'AddOp'
+              |-- left:
+                Identifier
+                  |-- name:
+                    'value'
+              |-- right:
+                Literal
+                  |-- value:
+                    1
+    FnDecl
+      |-- type_tok:
+        'Int'
+      |-- name:
+        'factorial'
+      |-- params:
+        Param
+          |-- type_tok:
+            'Int'
+          |-- name:
+            'n'
+      |-- body:
+        IfStmt
+          |-- cond:
+            Binary
+              |-- op:
+                'LessEq'
+              |-- left:
+                Identifier
+                  |-- name:
+                    'n'
+              |-- right:
+                Literal
+                  |-- value:
+                    1
+          |-- if_block:
+            ReturnStmt
+              |-- expr:
+                Literal
+                  |-- value:
+                    1
+          |-- else_block:
+        ReturnStmt
+          |-- expr:
+            Binary
+              |-- op:
+                'MulOp'
+              |-- left:
+                Identifier
+                  |-- name:
+                    'n'
+              |-- right:
+                Call
+                  |-- callee:
+                    Identifier
+                      |-- name:
+                        'factorial'
+                  |-- args:
+                    Binary
+                      |-- op:
+                        'SubOp'
+                      |-- left:
+                        Identifier
+                          |-- name:
+                            'n'
+                      |-- right:
+                        Literal
+                          |-- value:
+                            1
+    FnDecl
+      |-- type_tok:
+        'Int'
+      |-- name:
+        'main'
+      |-- params:
+      |-- body:
+        Tuple:
+          [0]:
+            'Var'
+          [1]:
+            VarDecl
+              |-- type_tok:
+                'Int'
+              |-- name:
+                'result'
+              |-- expr:
+                Literal
+                  |-- value:
+                    0
+        IfStmt
+          |-- cond:
+            Literal
+              |-- value:
+                1
+          |-- if_block:
+            Tuple:
+              [0]:
+                'Var'
+              [1]:
+                VarDecl
+                  |-- type_tok:
+                    'Int'
+                  |-- name:
+                    'temp'
+                  |-- expr:
+                    Literal
+                      |-- value:
+                        5
+          |-- else_block:
+        ExprStmt
+          |-- expr:
+            Binary
+              |-- op:
+                'AssignOp'
+              |-- left:
+                Identifier
+                  |-- name:
+                    'temp'
+              |-- right:
+                Literal
+                  |-- value:
+                    10
+        Tuple:
+          [0]:
+            'Var'
+          [1]:
+            VarDecl
+              |-- type_tok:
+                'Int'
+              |-- name:
+                'a'
+              |-- expr:
+                Literal
+                  |-- value:
+                    5
+        Tuple:
+          [0]:
+            'Var'
+          [1]:
+            VarDecl
+              |-- type_tok:
+                'Int'
+              |-- name:
+                'b'
+              |-- expr:
+                Literal
+                  |-- value:
+                    10
+        Tuple:
+          [0]:
+            'Var'
+          [1]:
+            VarDecl
+              |-- type_tok:
+                'Int'
+              |-- name:
+                'sum'
+              |-- expr:
+                Binary
+                  |-- op:
+                    'AddOp'
+                  |-- left:
+                    Identifier
+                      |-- name:
+                        'a'
+                  |-- right:
+                    Identifier
+                      |-- name:
+                        'b'
+        Tuple:
+          [0]:
+            'Var'
+          [1]:
+            VarDecl
+              |-- type_tok:
+                'Int'
+              |-- name:
+                'incremented'
+              |-- expr:
+                Call
+                  |-- callee:
+                    Identifier
+                      |-- name:
+                        'increment'
+                  |-- args:
+                    Identifier
+                      |-- name:
+                        'sum'
+        Tuple:
+          [0]:
+            'Block'
+          [1]:
+            Tuple:
+              [0]:
+                'Var'
+              [1]:
+                VarDecl
+                  |-- type_tok:
+                    'Int'
+                  |-- name:
+                    'localVar'
+                  |-- expr:
+                    Literal
+                      |-- value:
+                        20
+            ExprStmt
+              |-- expr:
+                Binary
+                  |-- op:
+                    'AssignOp'
+                  |-- left:
+                    Identifier
+                      |-- name:
+                        'result'
+                  |-- right:
+                    Binary
+                      |-- op:
+                        'AddOp'
+                      |-- left:
+                        Identifier
+                          |-- name:
+                            'localVar'
+                      |-- right:
+                        Identifier
+                          |-- name:
+                            'incremented'
+        ForStmt
+          |-- init:
+            VarDecl
+              |-- type_tok:
+                'Int'
+              |-- name:
+                'i'
+              |-- expr:
+                Literal
+                  |-- value:
+                    0
+          |-- cond:
+            Binary
+              |-- op:
+                'LessThan'
+              |-- left:
+                Identifier
+                  |-- name:
+                    'i'
+              |-- right:
+                Literal
+                  |-- value:
+                    5
+          |-- updt:
+            Binary
+              |-- op:
+                'AssignOp'
+              |-- left:
+                Identifier
+                  |-- name:
+                    'i'
+              |-- right:
+                Binary
+                  |-- op:
+                    'AddOp'
+                  |-- left:
+                    Identifier
+                      |-- name:
+                        'i'
+                  |-- right:
+                    Literal
+                      |-- value:
+                        1
+          |-- block:
+            Tuple:
+              [0]:
+                'Var'
+              [1]:
+                VarDecl
+                  |-- type_tok:
+                    'Int'
+                  |-- name:
+                    'loopVar'
+                  |-- expr:
+                    Binary
+                      |-- op:
+                        'MulOp'
+                      |-- left:
+                        Identifier
+                          |-- name:
+                            'i'
+                      |-- right:
+                        Literal
+                          |-- value:
+                            2
+            ExprStmt
+              |-- expr:
+                Binary
+                  |-- op:
+                    'AssignOp'
+                  |-- left:
+                    Identifier
+                      |-- name:
+                        'result'
+                  |-- right:
+                    Binary
+                      |-- op:
+                        'AddOp'
+                      |-- left:
+                        Identifier
+                          |-- name:
+                            'result'
+                      |-- right:
+                        Identifier
+                          |-- name:
+                            'loopVar'
+        IfStmt
+          |-- cond:
+            Binary
+              |-- op:
+                'GreaterThan'
+              |-- left:
+                Identifier
+                  |-- name:
+                    'result'
+              |-- right:
+                Literal
+                  |-- value:
+                    50
+          |-- if_block:
+            Tuple:
+              [0]:
+                'Var'
+              [1]:
+                VarDecl
+                  |-- type_tok:
+                    'Int'
+                  |-- name:
+                    'msg'
+                  |-- expr:
+                    Literal
+                      |-- value:
+                        1
+            ExprStmt
+              |-- expr:
+                Binary
+                  |-- op:
+                    'AssignOp'
+                  |-- left:
+                    Identifier
+                      |-- name:
+                        'result'
+                  |-- right:
+                    Binary
+                      |-- op:
+                        'AddOp'
+                      |-- left:
+                        Identifier
+                          |-- name:
+                            'result'
+                      |-- right:
+                        Identifier
+                          |-- name:
+                            'msg'
+          |-- else_block:
+            Tuple:
+              [0]:
+                'Var'
+              [1]:
+                VarDecl
+                  |-- type_tok:
+                    'Int'
+                  |-- name:
+                    'msg'
+                  |-- expr:
+                    Literal
+                      |-- value:
+                        0
+            ExprStmt
+              |-- expr:
+                Binary
+                  |-- op:
+                    'AssignOp'
+                  |-- left:
+                    Identifier
+                      |-- name:
+                        'result'
+                  |-- right:
+                    Binary
+                      |-- op:
+                        'AddOp'
+                      |-- left:
+                        Identifier
+                          |-- name:
+                            'result'
+                      |-- right:
+                        Identifier
+                          |-- name:
+                            'msg'
+        Tuple:
+          [0]:
+            'Var'
+          [1]:
+            VarDecl
+              |-- type_tok:
+                'Int'
+              |-- name:
+                'fact5'
+              |-- expr:
+                Call
+                  |-- callee:
+                    Identifier
+                      |-- name:
+                        'factorial'
+                  |-- args:
+                    Literal
+                      |-- value:
+                        5
+        ReturnStmt
+          |-- expr:
+            Binary
+              |-- op:
+                'AddOp'
+              |-- left:
+                Identifier
+                  |-- name:
+                    'result'
+              |-- right:
+                Identifier
+                  |-- name:
+                    'fact5'

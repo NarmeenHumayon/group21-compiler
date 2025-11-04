@@ -339,8 +339,10 @@ class Parser:
 # --------------------------------------------------------------------
 # Helper to pretty-print the AST (for debugging / assignment output)
 # --------------------------------------------------------------------
+# Replace the pretty_print_ast function in compiler/parser.py with this:
+
 def pretty_print_ast(node, indent: int = 0):
-    """Recursively print AST nodes with indentation."""
+    """Recursively print AST nodes with indentation (Windows-compatible)."""
     space = "  " * indent
 
     # Handle lists of nodes
@@ -349,12 +351,21 @@ def pretty_print_ast(node, indent: int = 0):
             pretty_print_ast(item, indent)
         return
 
+    # Handle tuples (like ("Var", VarDecl(...)))
+    if isinstance(node, tuple):
+        print(f"{space}Tuple:")
+        for i, item in enumerate(node):
+            print(f"{space}  [{i}]:")
+            pretty_print_ast(item, indent + 2)
+        return
+
     # Handle our dataclass AST nodes
     if hasattr(node, "__dataclass_fields__"):
         print(f"{space}{node.__class__.__name__}")
         for field in node.__dataclass_fields__:
             value = getattr(node, field)
-            print(f"{space}  ├─ {field}:")
+            # Use ASCII characters instead of Unicode box-drawing chars
+            print(f"{space}  |-- {field}:")
             pretty_print_ast(value, indent + 2)
         return
 
