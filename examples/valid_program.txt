@@ -1,0 +1,53 @@
+# Example: Valid program with proper scoping
+# This program demonstrates correct variable and function scoping
+
+int globalCounter = 0
+
+function int increment(int value) {
+    return value + 1
+}
+
+function int factorial(int n) {
+    if (n <= 1) {
+        return 1
+    }
+    return n * factorial(n - 1)
+}
+
+function int main() {
+    int result = 0
+    
+    # Test basic arithmetic
+    int a = 5
+    int b = 10
+    int sum = a + b
+    
+    # Test function calls
+    int incremented = increment(sum)
+    
+    # Test nested scopes
+    {
+        int localVar = 20
+        result = localVar + incremented
+    }
+    
+    # Test for loop with proper scoping
+    for (int i = 0; i < 5; i = i + 1) {
+        int loopVar = i * 2
+        result = result + loopVar
+    }
+    
+    # Test if-else with scoping
+    if (result > 50) {
+        int msg = 1
+        result = result + msg
+    } else {
+        int msg = 0
+        result = result + msg
+    }
+    
+    # Test recursive function
+    int fact5 = factorial(5)
+    
+    return result + fact5
+}

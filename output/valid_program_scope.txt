@@ -1,0 +1,27 @@
+GLOBAL SCOPE SYMBOL TABLE
+============================================================
+
+Symbol: increment
+  Kind: function
+  Type: Int
+  Parameters: 1
+    - value: Int
+  Scope Level: 0
+
+Symbol: factorial
+  Kind: function
+  Type: Int
+  Parameters: 1
+    - n: Int
+  Scope Level: 0
+
+Symbol: main
+  Kind: function
+  Type: Int
+  Scope Level: 0
+
+Symbol: globalCounter
+  Kind: var
+  Type: Int
+  Scope Level: 0
+
