@@ -41,11 +41,24 @@ class Symbol:
 
 class ScopeNode:
     """A single scope frame in the spaghetti stack"""
-    def __init__(self, parent: Optional['ScopeNode'] = None, scope_type: str = 'block'):
+    
+    # Class variable to track unique scope IDs
+    _scope_counter = 0
+    
+    def __init__(self, parent: Optional['ScopeNode'] = None, scope_type: str = 'block', name: str = ""):
+        self.scope_id = ScopeNode._scope_counter
+        ScopeNode._scope_counter += 1
+        
         self.parent = parent
-        self.scope_type = scope_type  # 'global', 'function', 'block'
+        self.scope_type = scope_type  # 'global', 'function', 'block', 'if', 'else', 'for'
+        self.name = name  # For functions: function name; for others: descriptive name
         self.symbols: Dict[str, Symbol] = {}
         self.level = 0 if parent is None else parent.level + 1
+        self.children: List['ScopeNode'] = []  # Track child scopes
+        
+        # Register with parent
+        if parent is not None:
+            parent.children.append(self)
     
     def define(self, name: str, symbol: Symbol):
         """Define a symbol in this scope"""
@@ -71,19 +84,50 @@ class ScopeNode:
         if self.parent is not None:
             return self.parent.lookup(name)
         return None
+    
+    def get_scope_description(self) -> str:
+        """Get a human-readable description of this scope"""
+        if self.scope_type == 'global':
+            return "Global Scope"
+        elif self.scope_type == 'function':
+            return f"Function '{self.name}'"
+        elif self.scope_type == 'block':
+            return f"Block in '{self.name}'"
+        elif self.scope_type == 'if':
+            return f"If statement in '{self.name}'"
+        elif self.scope_type == 'else':
+            return f"Else statement in '{self.name}'"
+        elif self.scope_type == 'for':
+            return f"For loop in '{self.name}'"
+        return f"{self.scope_type} scope"
 
 
 class ScopeAnalyzer:
     """Performs scope analysis using a spaghetti stack"""
     
     def __init__(self):
-        self.global_scope = ScopeNode(parent=None, scope_type='global')
+        # Reset the scope counter for each new analysis
+        ScopeNode._scope_counter = 0
+        
+        self.global_scope = ScopeNode(parent=None, scope_type='global', name='global')
         self.current_scope = self.global_scope
         self.errors: List[str] = []
+        
+        # Track all scopes for comprehensive output
+        self.all_scopes: List[ScopeNode] = [self.global_scope]
+        
+        # Track current function context for naming nested scopes
+        self.current_function = "global"
     
-    def enter_scope(self, scope_type: str = 'block'):
+    def enter_scope(self, scope_type: str = 'block', name: str = ""):
         """Push a new scope onto the stack"""
-        self.current_scope = ScopeNode(parent=self.current_scope, scope_type=scope_type)
+        if not name:
+            name = self.current_function
+        
+        new_scope = ScopeNode(parent=self.current_scope, scope_type=scope_type, name=name)
+        self.current_scope = new_scope
+        self.all_scopes.append(new_scope)
+        return new_scope
     
     def exit_scope(self):
         """Pop the current scope from the stack"""
@@ -142,7 +186,9 @@ class ScopeAnalyzer:
     def visit_fn_decl(self, node: FnDecl):
         """Visit a function declaration"""
         # Enter function scope
-        self.enter_scope('function')
+        old_function = self.current_function
+        self.current_function = node.name
+        self.enter_scope('function', node.name)
         
         # Add parameters to function scope
         for param in node.params:
@@ -157,6 +203,7 @@ class ScopeAnalyzer:
         
         # Exit function scope
         self.exit_scope()
+        self.current_function = old_function
     
     def visit_var_decl(self, node: VarDecl):
         """Visit a variable declaration"""
@@ -187,20 +234,22 @@ class ScopeAnalyzer:
                 self.visit_expr(stmt.expr)
         elif isinstance(stmt, IfStmt):
             self.visit_expr(stmt.cond)
+            
             # if block
-            self.enter_scope('block')
+            self.enter_scope('if')
             for s in stmt.if_block:
                 self.visit_stmt(s)
             self.exit_scope()
+            
             # else block
             if stmt.else_block:
-                self.enter_scope('block')
+                self.enter_scope('else')
                 for s in stmt.else_block:
                     self.visit_stmt(s)
                 self.exit_scope()
         elif isinstance(stmt, ForStmt):
             # Enter for-loop scope
-            self.enter_scope('block')
+            self.enter_scope('for')
             
             # Visit init (can be var decl or expr)
             if stmt.init is not None:
@@ -262,6 +311,40 @@ class ScopeAnalyzer:
             # Visit arguments
             for arg in expr.args:
                 self.visit_expr(arg)
+    
+    def print_scope_tree(self, scope: ScopeNode = None, indent: int = 0, output_file=None):
+        """Print the complete scope tree showing the spaghetti stack structure"""
+        import sys
+        
+        if scope is None:
+            scope = self.global_scope
+        
+        out = output_file if output_file else sys.stdout
+        prefix = "  " * indent
+        
+        # Print scope header with both ID and level
+        if scope.scope_type == 'global':
+            print(f"{prefix}SCOPE {scope.scope_id} (Level {scope.level}): {scope.get_scope_description()}", file=out)
+        else:
+            parent_id = scope.parent.scope_id if scope.parent else "None"
+            print(f"{prefix}SCOPE {scope.scope_id} (Level {scope.level}): {scope.get_scope_description()} (parent: Scope {parent_id})", file=out)
+        
+        # Print symbols in this scope
+        if scope.symbols:
+            for name, symbol in scope.symbols.items():
+                if symbol.kind == 'function':
+                    param_count = len(symbol.params) if symbol.params else 0
+                    print(f"{prefix}  Symbol: {name} ({symbol.kind}, {symbol.type_tok}, {param_count} param{'s' if param_count != 1 else ''})", file=out)
+                else:
+                    print(f"{prefix}  Symbol: {name} ({symbol.kind}, {symbol.type_tok})", file=out)
+        else:
+            print(f"{prefix}  (no local symbols)", file=out)
+        
+        print(file=out)  # Blank line for readability
+        
+        # Print child scopes
+        for child in scope.children:
+            self.print_scope_tree(child, indent + 1, output_file)
 
 
 def analyze_scope(ast: Program) -> ScopeAnalyzer:

@@ -24,9 +24,10 @@ def test_scope_analysis(code: str, description: str):
         analyzer = analyze_scope(ast)
         
         print("✓ Scope analysis passed - no errors detected")
-        print(f"\nSymbol table (global scope):")
-        for name, symbol in analyzer.global_scope.symbols.items():
-            print(f"  {name}: kind={symbol.kind}, type={symbol.type_tok}")
+        print(f"\nComplete Scope Tree:")
+        print("=" * 60)
+        analyzer.print_scope_tree()
+        print(f"Summary: {len(analyzer.all_scopes)} scopes total")
         
     except ScopeError as e:
         print(f"✗ Scope analysis failed:")

@@ -117,39 +117,6 @@ Program
                 Literal
                   |-- value:
                     0
-        IfStmt
-          |-- cond:
-            Literal
-              |-- value:
-                1
-          |-- if_block:
-            Tuple:
-              [0]:
-                'Var'
-              [1]:
-                VarDecl
-                  |-- type_tok:
-                    'Int'
-                  |-- name:
-                    'temp'
-                  |-- expr:
-                    Literal
-                      |-- value:
-                        5
-          |-- else_block:
-        ExprStmt
-          |-- expr:
-            Binary
-              |-- op:
-                'AssignOp'
-              |-- left:
-                Identifier
-                  |-- name:
-                    'temp'
-              |-- right:
-                Literal
-                  |-- value:
-                    10
         Tuple:
           [0]:
             'Var'

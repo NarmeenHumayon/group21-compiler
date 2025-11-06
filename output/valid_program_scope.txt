@@ -1,27 +1,48 @@
-GLOBAL SCOPE SYMBOL TABLE
+SYMBOL TABLE (SPAGHETTI STACK)
+============================================================
+Complete scope hierarchy showing all nested scopes
 ============================================================
 
-Symbol: increment
-  Kind: function
-  Type: Int
-  Parameters: 1
-    - value: Int
-  Scope Level: 0
+SCOPE 0 (Level 0): Global Scope
+  Symbol: increment (function, Int, 1 param)
+  Symbol: factorial (function, Int, 1 param)
+  Symbol: main (function, Int, 0 params)
+  Symbol: globalCounter (var, Int)
 
-Symbol: factorial
-  Kind: function
-  Type: Int
-  Parameters: 1
-    - n: Int
-  Scope Level: 0
+  SCOPE 1 (Level 1): Function 'increment' (parent: Scope 0)
+    Symbol: value (param, Int)
 
-Symbol: main
-  Kind: function
-  Type: Int
-  Scope Level: 0
+  SCOPE 2 (Level 1): Function 'factorial' (parent: Scope 0)
+    Symbol: n (param, Int)
 
-Symbol: globalCounter
-  Kind: var
-  Type: Int
-  Scope Level: 0
+    SCOPE 3 (Level 2): If statement in 'factorial' (parent: Scope 2)
+      (no local symbols)
 
+  SCOPE 4 (Level 1): Function 'main' (parent: Scope 0)
+    Symbol: result (var, Int)
+    Symbol: a (var, Int)
+    Symbol: b (var, Int)
+    Symbol: sum (var, Int)
+    Symbol: incremented (var, Int)
+    Symbol: fact5 (var, Int)
+
+    SCOPE 5 (Level 2): Block in 'main' (parent: Scope 4)
+      Symbol: localVar (var, Int)
+
+    SCOPE 6 (Level 2): For loop in 'main' (parent: Scope 4)
+      Symbol: i (var, Int)
+      Symbol: loopVar (var, Int)
+
+    SCOPE 7 (Level 2): If statement in 'main' (parent: Scope 4)
+      Symbol: msg (var, Int)
+
+    SCOPE 8 (Level 2): Else statement in 'main' (parent: Scope 4)
+      Symbol: msg (var, Int)
+
+
+============================================================
+SUMMARY
+============================================================
+Total scopes: 9
+Global symbols: 4
+Total symbols (all scopes): 17

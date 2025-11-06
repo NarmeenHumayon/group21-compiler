@@ -1,4 +1,0 @@
-SCOPE ANALYSIS ERRORS
-============================================================
-
-UndeclaredVariableAccessed: Variable 'temp' is not declared
