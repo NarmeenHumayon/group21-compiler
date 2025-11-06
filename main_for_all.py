@@ -96,34 +96,40 @@ def compile_file(input_path: str, output_dir: str = "output", use_regex: bool = 
         analyzer = analyze_scope(ast)
         print("✓ Scope analysis successful: No scope errors detected")
         
-        # Save symbol table to file
+        # Save symbol table to file (complete scope tree)
         scope_file = os.path.join(output_dir, f"{filename}_scope.txt")
         with open(scope_file, "w", encoding="utf-8") as f:
-            f.write("GLOBAL SCOPE SYMBOL TABLE\n")
+            f.write("SYMBOL TABLE (SPAGHETTI STACK)\n")
+            f.write("=" * 60 + "\n")
+            f.write("Complete scope hierarchy showing all nested scopes\n")
             f.write("=" * 60 + "\n\n")
             
-            if analyzer.global_scope.symbols:
-                for name, symbol in analyzer.global_scope.symbols.items():
-                    f.write(f"Symbol: {name}\n")
-                    f.write(f"  Kind: {symbol.kind}\n")
-                    f.write(f"  Type: {symbol.type_tok}\n")
-                    if symbol.params:
-                        f.write(f"  Parameters: {len(symbol.params)}\n")
-                        for param in symbol.params:
-                            f.write(f"    - {param.name}: {param.type_tok}\n")
-                    f.write(f"  Scope Level: {symbol.scope_level}\n")
-                    f.write("\n")
-            else:
-                f.write("(No global symbols)\n")
+            # Print the complete scope tree
+            analyzer.print_scope_tree(output_file=f)
+            
+            # Summary statistics
+            f.write("\n" + "=" * 60 + "\n")
+            f.write("SUMMARY\n")
+            f.write("=" * 60 + "\n")
+            f.write(f"Total scopes: {len(analyzer.all_scopes)}\n")
+            f.write(f"Global symbols: {len(analyzer.global_scope.symbols)}\n")
+            
+            total_symbols = sum(len(scope.symbols) for scope in analyzer.all_scopes)
+            f.write(f"Total symbols (all scopes): {total_symbols}\n")
         
         print(f"  Symbol table saved to: {scope_file}")
-        print(f"\n  Global scope contains {len(analyzer.global_scope.symbols)} symbols:")
-        for name, symbol in analyzer.global_scope.symbols.items():
-            if symbol.kind == 'function':
-                param_count = len(symbol.params) if symbol.params else 0
-                print(f"    - {name}: {symbol.kind} ({symbol.type_tok}) with {param_count} params")
-            else:
-                print(f"    - {name}: {symbol.kind} ({symbol.type_tok})")
+        print(f"\n  Scope Analysis Summary:")
+        print(f"    Total scopes created: {len(analyzer.all_scopes)}")
+        print(f"    Global symbols: {len(analyzer.global_scope.symbols)}")
+        
+        # Print brief overview of scope hierarchy
+        print(f"\n  Scope Hierarchy:")
+        for scope in analyzer.all_scopes[:10]:  # Show first 10 scopes
+            indent = "    " + "  " * scope.level
+            print(f"{indent}Scope {scope.scope_id}: {scope.get_scope_description()} ({len(scope.symbols)} symbols)")
+        
+        if len(analyzer.all_scopes) > 10:
+            print(f"    ... and {len(analyzer.all_scopes) - 10} more scopes")
         
     except ScopeError as e:
         print(f"✗ Scope analysis failed:")
